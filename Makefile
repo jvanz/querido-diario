@@ -1,9 +1,8 @@
-ENV_FILE := .env
-
 setup: 
-	cp .env.example $(ENV_FILE)
+	cp .env.example .env
 	docker-compose pull
 	docker-compose build
+	make seed
 	pip3 install -r requirements.txt
 	touch .git/hooks/pre-commit
 	echo "make check" > .git/hooks/pre-commit
@@ -15,8 +14,10 @@ check:
 destroy:
 	echo "Removing all containers...."
 	docker-compose down --rmi all --volumes --remove-orphans
-	docker-compose rm -v -s -f
-	rm -f $(ENV_FILE)
+
+seed:
+	docker-compose up -d postgres
+	docker-compose run --rm processing bash seed.sh
 
 test:
 	docker-compose run --rm processing black . --check
