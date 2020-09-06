@@ -2,7 +2,7 @@ name: Building container image
 on: 
   push:
     branches:
-      - master
+      - "*"
  
 env:
   NAMESPACE: ${{ secrets.NAMESPACE }}
